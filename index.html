@@ -2,79 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kubernetes Usage Guide</title>
+  <title>Kubernetes Usage Dashboard</title>
   <style>
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", Tahoma, sans-serif;
       margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #f5f5f5;
+      background: #f4f6f9;
+      color: #333;
     }
     header {
       text-align: center;
       padding: 30px;
+      background: #326ce5;
+      color: white;
     }
     header img {
-      width: 120px;
-      display: block;
-      margin: 0 auto 15px;
+      width: 100px;
+      margin-bottom: 10px;
     }
     header h1 {
       margin: 0;
-      font-size: 2.5em;
-      color: #00c6ff;
+      font-size: 2.2em;
     }
     main {
-      max-width: 800px;
-      margin: 40px auto;
-      background: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
     }
     h2 {
-      border-bottom: 2px solid #00c6ff;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      color: #00c6ff;
+      color: #326ce5;
+      border-bottom: 2px solid #326ce5;
+      padding-bottom: 5px;
     }
-    ul {
+    .commands ul {
       list-style: none;
       padding: 0;
     }
-    ul li {
-      background: rgba(0,0,0,0.4);
+    .commands li {
+      background: #e9f0fb;
       margin: 10px 0;
       padding: 15px;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: background 0.2s ease;
     }
-    ul li:hover {
-      transform: translateX(5px);
-      background: rgba(0,0,0,0.6);
+    .commands li:hover {
+      background: #d0e2fa;
     }
     .output {
       display: none;
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 10px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 5px;
+      background: #fff;
+      border-left: 4px solid #326ce5;
       font-family: monospace;
-      color: #00ffcc;
+    }
+    .stats {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #326ce5;
+    }
+    .cost {
+      font-size: 1.2em;
+      color: #28a745;
     }
     footer {
       text-align: center;
       padding: 15px;
-      background: rgba(0,0,0,0.6);
-      border-top: 3px solid #00c6ff;
+      background: #326ce5;
+      color: white;
       margin-top: 40px;
-    }
-    footer p {
-      margin: 0;
-      font-size: 0.9em;
-      color: #ccc;
     }
   </style>
 </head>
@@ -82,33 +90,58 @@
   <header>
     <!-- Kubernetes logo -->
     <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo">
-    <h1>Kubernetes Basics</h1>
+    <h1>Kubernetes Usage Dashboard</h1>
   </header>
+
   <main>
-    <h2>Common Commands</h2>
-    <ul>
-      <li onclick="showOutput(this, 'Lists all pods in the cluster')">
-        <strong>kubectl get pods</strong>
-        <div class="output"></div>
-      </li>
-      <li onclick="showOutput(this, 'Creates a deployment named nginx using the nginx image')">
-        <strong>kubectl create deployment nginx --image=nginx</strong>
-        <div class="output"></div>
-      </li>
-      <li onclick="showOutput(this, 'Exposes the nginx deployment on port 80 with a LoadBalancer')">
-        <strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong>
-        <div class="output"></div>
-      </li>
-      <li onclick="showOutput(this, 'Scales the nginx deployment to 3 replicas')">
-        <strong>kubectl scale deployment nginx --replicas=3</strong>
-        <div class="output"></div>
-      </li>
-      <li onclick="showOutput(this, 'Deletes the specified pod')">
-        <strong>kubectl delete pod pod-name</strong>
-        <div class="output"></div>
-      </li>
-    </ul>
+    <section class="commands">
+      <h2>Interactive Commands</h2>
+      <ul>
+        <li onclick="showOutput(this, 'Lists all pods currently running in the cluster.')">
+          <strong>kubectl get pods</strong>
+          <div class="output"></div>
+        </li>
+        <li onclick="showOutput(this, 'Creates a deployment named nginx using the nginx image.')">
+          <strong>kubectl create deployment nginx --image=nginx</strong>
+          <div class="output"></div>
+        </li>
+        <li onclick="showOutput(this, 'Exposes the nginx deployment on port 80 with a LoadBalancer.')">
+          <strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong>
+          <div class="output"></div>
+        </li>
+        <li onclick="showOutput(this, 'Scales the nginx deployment to 3 replicas.')">
+          <strong>kubectl scale deployment nginx --replicas=3</strong>
+          <div class="output"></div>
+        </li>
+        <li onclick="showOutput(this, 'Deletes the specified pod.')">
+          <strong>kubectl delete pod pod-name</strong>
+          <div class="output"></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="stats">
+      <div class="card">
+        <h3>Node 1 (VM)</h3>
+        <p>CPU Usage: 65%</p>
+        <p>Memory Usage: 2.5 GB / 4 GB</p>
+        <p class="cost">Cost: $0.12/hour</p>
+      </div>
+      <div class="card">
+        <h3>Node 2 (VM)</h3>
+        <p>CPU Usage: 40%</p>
+        <p>Memory Usage: 1.8 GB / 4 GB</p>
+        <p class="cost">Cost: $0.10/hour</p>
+      </div>
+      <div class="card">
+        <h3>Node 3 (VM)</h3>
+        <p>CPU Usage: 75%</p>
+        <p>Memory Usage: 3.2 GB / 4 GB</p>
+        <p class="cost">Cost: $0.15/hour</p>
+      </div>
+    </section>
   </main>
+
   <footer>
     <p>© 2026 Kubernetes Usage Guide | Designed for learners</p>
   </footer>
