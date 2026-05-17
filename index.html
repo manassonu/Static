@@ -12,10 +12,13 @@
       color: #f5f5f5;
     }
     header {
-      background: rgba(0,0,0,0.6);
-      padding: 20px;
       text-align: center;
-      border-bottom: 3px solid #00c6ff;
+      padding: 30px;
+    }
+    header img {
+      width: 120px;
+      display: block;
+      margin: 0 auto 15px;
     }
     header h1 {
       margin: 0;
@@ -45,11 +48,21 @@
       margin: 10px 0;
       padding: 15px;
       border-radius: 5px;
+      cursor: pointer;
       transition: transform 0.2s ease, background 0.2s ease;
     }
     ul li:hover {
       transform: translateX(5px);
       background: rgba(0,0,0,0.6);
+    }
+    .output {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 5px;
+      font-family: monospace;
+      color: #00ffcc;
     }
     footer {
       text-align: center;
@@ -67,20 +80,49 @@
 </head>
 <body>
   <header>
+    <!-- Kubernetes logo -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo">
     <h1>Kubernetes Basics</h1>
   </header>
   <main>
     <h2>Common Commands</h2>
     <ul>
-      <li><strong>kubectl get pods</strong> – List all pods in the cluster</li>
-      <li><strong>kubectl create deployment nginx --image=nginx</strong> – Create a deployment</li>
-      <li><strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong> – Expose deployment</li>
-      <li><strong>kubectl scale deployment nginx --replicas=3</strong> – Scale deployment</li>
-      <li><strong>kubectl delete pod pod-name</strong> – Delete a pod</li>
+      <li onclick="showOutput(this, 'Lists all pods in the cluster')">
+        <strong>kubectl get pods</strong>
+        <div class="output"></div>
+      </li>
+      <li onclick="showOutput(this, 'Creates a deployment named nginx using the nginx image')">
+        <strong>kubectl create deployment nginx --image=nginx</strong>
+        <div class="output"></div>
+      </li>
+      <li onclick="showOutput(this, 'Exposes the nginx deployment on port 80 with a LoadBalancer')">
+        <strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong>
+        <div class="output"></div>
+      </li>
+      <li onclick="showOutput(this, 'Scales the nginx deployment to 3 replicas')">
+        <strong>kubectl scale deployment nginx --replicas=3</strong>
+        <div class="output"></div>
+      </li>
+      <li onclick="showOutput(this, 'Deletes the specified pod')">
+        <strong>kubectl delete pod pod-name</strong>
+        <div class="output"></div>
+      </li>
     </ul>
   </main>
   <footer>
     <p>© 2026 Kubernetes Usage Guide | Designed for learners</p>
   </footer>
+
+  <script>
+    function showOutput(element, message) {
+      const outputDiv = element.querySelector('.output');
+      if (outputDiv.style.display === "block") {
+        outputDiv.style.display = "none";
+      } else {
+        outputDiv.innerText = message;
+        outputDiv.style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
