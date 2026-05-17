@@ -1,0 +1,28 @@
+name: Deploy Static Site to S3
+
+# Trigger workflow when code is pushed to main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest   # GitHub provides a Linux VM
+    steps:
+      # Step 1: Checkout code from repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 3: Upload index.html to S3
+      - name: Upload to S3
+        run: |
+          aws s3 cp index.html s3://my-static-site-bucket-manas/index.html --region us-east-1
