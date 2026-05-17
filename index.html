@@ -1,17 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Kubernetes Usage Guide</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #f5f5f5;
+    }
+    header {
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid #00c6ff;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #00c6ff;
+    }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    h2 {
+      border-bottom: 2px solid #00c6ff;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      color: #00c6ff;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      background: rgba(0,0,0,0.4);
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    ul li:hover {
+      transform: translateX(5px);
+      background: rgba(0,0,0,0.6);
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.6);
+      border-top: 3px solid #00c6ff;
+      margin-top: 40px;
+    }
+    footer p {
+      margin: 0;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Kubernetes Basics</h1>
-  <h2>Common Commands</h2>
-  <ul>
-    <li>kubectl get pods</li>
-    <li>kubectl create deployment nginx --image=nginx</li>
-    <li>kubectl expose deployment nginx --port=80 --type=LoadBalancer</li>
-    <li>kubectl scale deployment nginx --replicas=3</li>
-    <li>kubectl delete pod pod-name</li>
-  </ul>
+  <header>
+    <h1>Kubernetes Basics</h1>
+  </header>
+  <main>
+    <h2>Common Commands</h2>
+    <ul>
+      <li><strong>kubectl get pods</strong> – List all pods in the cluster</li>
+      <li><strong>kubectl create deployment nginx --image=nginx</strong> – Create a deployment</li>
+      <li><strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong> – Expose deployment</li>
+      <li><strong>kubectl scale deployment nginx --replicas=3</strong> – Scale deployment</li>
+      <li><strong>kubectl delete pod pod-name</strong> – Delete a pod</li>
+    </ul>
+  </main>
+  <footer>
+    <p>© 2026 Kubernetes Usage Guide | Designed for learners</p>
+  </footer>
 </body>
 </html>
