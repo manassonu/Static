@@ -13,87 +13,175 @@
     :root {
       --k8s-blue: #326ce5;
       --deep-navy: #000c1d;
-      --helm-cyan: #0f1689;
+      --robo-cyan: #00f2ff;
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #001f3f 0%, #000c1d 100%);
+      background: radial-gradient(circle at top right, #001f3f, #000c1d);
       background-attachment: fixed;
       color: #f5f5f5;
     }
     .glass-card {
       background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      transition: all 0.3s ease;
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .glass-card:hover {
-      border-color: var(--k8s-blue);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px -10px rgba(50, 108, 229, 0.3);
+      border-color: var(--robo-cyan);
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
     }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
+    .robo-glow {
+      filter: drop-shadow(0 0 8px var(--robo-cyan));
     }
-    .accordion-open .accordion-content {
-      max-height: 300px;
-      margin-top: 12px;
+    .component-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(50, 108, 229, 0.2);
+      border: 1px solid rgba(50, 108, 229, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .terminal-header {
-      background: #333;
-      border-radius: 8px 8px 0 0;
-      padding: 8px 12px;
-      display: flex; gap: 6px;
+    .neural-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--robo-cyan), transparent);
+      opacity: 0.3;
     }
-    .dot { height: 10px; width: 10px; border-radius: 50%; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .floating-robo { animation: float 3s ease-in-out infinite; }
     code { font-family: 'JetBrains Mono', monospace; }
-    
-    /* Animation for the "Rollout" graphic */
-    @keyframes pulse-blue {
-      0%, 100% { background-color: rgba(50, 108, 229, 0.2); }
-      50% { background-color: rgba(50, 108, 229, 0.5); }
-    }
-    .pod-node { animation: pulse-blue 2s infinite ease-in-out; }
   </style>
 </head>
 <body class="min-h-screen">
 
-  <header class="relative flex flex-col items-center justify-center text-center py-24 px-6 overflow-hidden">
+  <header class="relative flex flex-col items-center justify-center text-center py-20 px-6 overflow-hidden">
     <div class="absolute inset-0 z-0 opacity-10">
         <svg width="100%" height="100%"><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern><rect width="100%" height="100%" fill="url(#grid)" /></svg>
     </div>
     
-    <div class="relative z-10">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo" class="w-32 mb-8 animate-pulse">
-        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">
-            Kubernetes <span class="text-[#326ce5]">Command Deck</span>
+    <div class="relative z-10 flex flex-col items-center">
+        <div class="floating-robo mb-6">
+            <i data-lucide="bot" class="w-20 h-20 text-[#00f2ff] robo-glow"></i>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4 uppercase">
+            Cluster <span class="text-[#326ce5]">Neural Core</span>
         </h1>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
-            Navigating deployments and helm charts across the cloud-native seas.
-        </p>
+        <p class="text-lg text-cyan-400 font-mono tracking-widest uppercase">Automated Orchestration Intelligence</p>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 space-y-20 pb-24">
+  <main class="max-w-7xl mx-auto px-6 space-y-24 pb-24">
     
     <section>
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-4 mb-12">
+            <i data-lucide="cpu" class="text-[#00f2ff]"></i>
+            <h2 class="text-3xl font-bold text-white uppercase tracking-tight">System Architecture Components</h2>
+            <div class="flex-1 neural-line"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="glass-card p-8 border-l-4 border-l-cyan-500 relative overflow-hidden">
+                <div class="absolute top-4 right-4 opacity-10"><i data-lucide="brain" size="64"></i></div>
+                <h3 class="text-xl font-bold text-cyan-400 mb-6 flex items-center gap-2 italic">
+                    <i data-lucide="brain" size="20"></i> Control Plane
+                </h3>
+                <ul class="space-y-6 text-sm">
+                    <li>
+                        <span class="component-tag">Brain Hub</span>
+                        <p class="font-bold mt-1 text-white">kube-apiserver</p>
+                        <p class="text-gray-400 leading-tight">Exposes the Kubernetes HTTP API. The front door for all commands.</p>
+                    </li>
+                    <li>
+                        <span class="component-tag">Memory Cell</span>
+                        <p class="font-bold mt-1 text-white">etcd</p>
+                        <p class="text-gray-400 leading-tight">Consistent, high-availability key-value store for cluster data.</p>
+                    </li>
+                    <li>
+                        <span class="component-tag">Decision Logic</span>
+                        <p class="font-bold mt-1 text-white">kube-scheduler</p>
+                        <p class="text-gray-400 leading-tight">Assigns newly created Pods to healthy nodes based on resources.</p>
+                    </li>
+                    <li>
+                        <span class="component-tag">Status Monitor</span>
+                        <p class="font-bold mt-1 text-white">kube-controller-manager</p>
+                        <p class="text-gray-400 leading-tight">Ensures the cluster's current state matches the desired state.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card p-8 border-l-4 border-l-blue-500 relative">
+                <div class="absolute top-4 right-4 opacity-10"><i data-lucide="server" size="64"></i></div>
+                <h3 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-2 italic">
+                    <i data-lucide="server" size="20"></i> Worker Nodes
+                </h3>
+                <ul class="space-y-6 text-sm">
+                    <li>
+                        <span class="component-tag">Agent</span>
+                        <p class="font-bold mt-1 text-white">kubelet</p>
+                        <p class="text-gray-400 leading-tight">Ensures Pods are running and healthy on each specific node.</p>
+                    </li>
+                    <li>
+                        <span class="component-tag">Network Flow</span>
+                        <p class="font-bold mt-1 text-white">kube-proxy</p>
+                        <p class="text-gray-400 leading-tight">Maintains network rules for service communication.</p>
+                    </li>
+                    <li>
+                        <span class="component-tag">Engine</span>
+                        <p class="font-bold mt-1 text-white">Container Runtime</p>
+                        <p class="text-gray-400 leading-tight">The software (like Docker/containerd) responsible for running containers.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card p-8 border-l-4 border-l-purple-500 relative">
+                <div class="absolute top-4 right-4 opacity-10"><i data-lucide="plus-circle" size="64"></i></div>
+                <h3 class="text-xl font-bold text-purple-400 mb-6 flex items-center gap-2 italic">
+                    <i data-lucide="plus-circle" size="20"></i> Augmentations
+                </h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                        <p class="font-bold text-white text-xs">CoreDNS</p>
+                        <p class="text-[11px] text-gray-400">Cluster-wide name resolution system.</p>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                        <p class="font-bold text-white text-xs">Dashboard UI</p>
+                        <p class="text-[11px] text-gray-400">Web-based management interface.</p>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                        <p class="font-bold text-white text-xs">Prometheus/Grafana</p>
+                        <p class="text-[11px] text-gray-400">Resource monitoring and metrics collection.</p>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                        <p class="font-bold text-white text-xs">Fluentd</p>
+                        <p class="text-[11px] text-gray-400">Centralized cluster-level log management.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex items-center gap-4 mb-12">
             <i data-lucide="activity" class="text-blue-500"></i>
-            <h2 class="text-3xl font-bold text-white">Live Cluster Metrics</h2>
+            <h2 class="text-3xl font-bold text-white uppercase tracking-tight">Telemetry Dashboard</h2>
+            <div class="flex-1 neural-line"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="glass-card p-6">
                 <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
-                    CPU Utilization <span class="text-[#326ce5] text-sm">Real-time</span>
+                    CPU Utilization <span class="text-cyan-400 font-mono text-sm">SCANNING...</span>
                 </h3>
                 <canvas id="cpuChart"></canvas>
             </div>
             <div class="glass-card p-6">
                 <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
-                    Memory Allocation <span class="text-[#326ce5] text-sm">Cluster Wide</span>
+                    Memory Allocation <span class="text-blue-400 font-mono text-sm">OPTIMIZED</span>
                 </h3>
                 <canvas id="memoryChart"></canvas>
             </div>
@@ -101,112 +189,48 @@
     </section>
 
     <section>
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-4 mb-12">
             <i data-lucide="layers" class="text-blue-500"></i>
-            <h2 class="text-3xl font-bold text-white">Deployments & Rollouts</h2>
+            <h2 class="text-3xl font-bold text-white uppercase tracking-tight">Deployments & Helm</h2>
+            <div class="flex-1 neural-line"></div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass-card p-6 border-t-4 border-blue-600">
-                <h4 class="font-bold text-blue-400 mb-4 flex items-center gap-2">
-                    <i data-lucide="refresh-cw" size="18"></i> Rollout Visualizer
+            <div class="glass-card p-8 border-t-2 border-t-cyan-500">
+                <h4 class="font-bold text-cyan-400 mb-6 flex items-center gap-2 uppercase tracking-widest text-sm">
+                    <i data-lucide="refresh-cw" size="18" class="animate-spin-slow"></i> Rollout Protocol
                 </h4>
-                <div class="flex justify-around items-center py-10 bg-black/20 rounded-lg">
+                <div class="flex justify-around items-center py-10 bg-black/40 rounded-xl border border-white/5">
                     <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 rounded bg-green-500/20 border border-green-500 flex items-center justify-center mb-2">v1</div>
-                        <span class="text-[10px] text-gray-500 uppercase">Terminating</span>
+                        <div class="w-14 h-14 rounded-full bg-green-500/10 border-2 border-green-500/50 flex items-center justify-center mb-2 font-mono text-xs">v1</div>
+                        <span class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">Terminating</span>
                     </div>
-                    <i data-lucide="arrow-right" class="text-gray-600"></i>
+                    <i data-lucide="chevrons-right" class="text-cyan-500 opacity-50"></i>
                     <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 rounded pod-node border border-blue-500 flex items-center justify-center mb-2">v2</div>
-                        <span class="text-[10px] text-blue-400 uppercase">Deploying</span>
+                        <div class="w-14 h-14 rounded-full bg-cyan-500/20 border-2 border-cyan-500 flex items-center justify-center mb-2 font-mono text-xs shadow-[0_0_15px_rgba(0,242,255,0.3)]">v2</div>
+                        <span class="text-[9px] text-cyan-400 uppercase font-bold tracking-tighter">Active</span>
                     </div>
-                    <i data-lucide="arrow-right" class="text-gray-600"></i>
-                    <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 rounded bg-blue-500/10 border border-dashed border-gray-600 flex items-center justify-center mb-2 text-gray-600">v2</div>
-                        <span class="text-[10px] text-gray-500 uppercase">Pending</span>
+                    <i data-lucide="chevrons-right" class="text-gray-700"></i>
+                    <div class="flex flex-col items-center opacity-30">
+                        <div class="w-14 h-14 rounded-full border-2 border-dashed border-gray-500 flex items-center justify-center mb-2 font-mono text-xs">v3</div>
+                        <span class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">Queue</span>
                     </div>
-                </div>
-                <p class="mt-4 text-sm text-gray-400">Deployments manage the <strong>Desired State</strong> of your application, handling scaling and zero-downtime updates.</p>
-            </div>
-
-            <div class="space-y-4">
-                <div class="glass-card p-4 flex justify-between items-center group cursor-pointer" onclick="copyCommand(event, 'kubectl rollout status deployment/myapp')">
-                    <div>
-                        <span class="text-blue-400 font-mono text-sm">kubectl rollout status</span>
-                        <p class="text-xs text-gray-500">Check update progress</p>
-                    </div>
-                    <i data-lucide="copy" size="16" class="text-gray-600 group-hover:text-blue-400"></i>
-                </div>
-                <div class="glass-card p-4 flex justify-between items-center group cursor-pointer" onclick="copyCommand(event, 'kubectl scale deployment/myapp --replicas=5')">
-                    <div>
-                        <span class="text-blue-400 font-mono text-sm">kubectl scale</span>
-                        <p class="text-xs text-gray-500">Scale pod count up/down</p>
-                    </div>
-                    <i data-lucide="maximize" size="16" class="text-gray-600 group-hover:text-blue-400"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="flex items-center gap-3 mb-8">
-            <i data-lucide="anchor" class="text-cyan-400"></i>
-            <h2 class="text-3xl font-bold text-white">Helm: The Package Manager</h2>
-        </div>
-        <div class="glass-card p-8 bg-gradient-to-r from-blue-900/20 to-transparent border-l-4 border-cyan-500">
-            <div class="flex flex-col md:flex-row gap-8 items-center">
-                <div class="flex-1">
-                    <p class="text-gray-300 leading-relaxed mb-4">
-                        Helm helps you manage Kubernetes applications through <strong>Charts</strong>. Charts are bundles of YAML templates that allow for reproducible installs and version control.
-                    </p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-black/40 p-3 rounded border border-white/5 font-mono text-xs text-cyan-300">
-                            helm install [release] [chart]
-                        </div>
-                        <div class="bg-black/40 p-3 rounded border border-white/5 font-mono text-xs text-cyan-300">
-                            helm upgrade [release] [chart]
-                        </div>
-                    </div>
-                </div>
-                <div class="w-32 h-32 flex items-center justify-center bg-cyan-500/10 rounded-full border-2 border-cyan-500/30">
-                    <i data-lucide="ship-wheel" size="64" class="text-cyan-400 opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="flex items-center gap-3 mb-8">
-            <i data-lucide="terminal" class="text-blue-500"></i>
-            <h2 class="text-3xl font-bold text-white">Command Explorer</h2>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
-                <div class="flex justify-between items-center cursor-pointer">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="search" size="16" class="text-blue-400"></i>
-                        <code class="text-blue-400 font-bold text-lg">kubectl get</code>
-                    </div>
-                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl get pods')">COPY</button>
-                </div>
-                <div class="accordion-content text-sm text-gray-400">
-                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> List resources like pods, services, or deployments.</p>
-                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl get pods -A</code></p>
                 </div>
             </div>
 
-            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
-                <div class="flex justify-between items-center cursor-pointer">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="database" size="16" class="text-cyan-400"></i>
-                        <code class="text-cyan-400 font-bold text-lg">helm repo</code>
+            <div class="glass-card p-8 bg-gradient-to-br from-blue-900/10 to-transparent border-l-4 border-cyan-500">
+                <h4 class="text-sm font-bold text-cyan-400 mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="anchor" size="18"></i> Helm Chart logic
+                </h4>
+                <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                    Packaging logic for automated shipping. YAML templating for reproducible cluster states.
+                </p>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="bg-black/60 p-3 rounded font-mono text-[11px] text-cyan-300 border border-white/5">
+                        helm upgrade --install my-app ./chart
                     </div>
-                    <button class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'helm repo add bitnami https://charts.bitnami.com/bitnami')">COPY</button>
-                </div>
-                <div class="accordion-content text-sm text-gray-400">
-                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Manage chart repositories.</p>
-                    <p class="bg-black/30 p-2 rounded text-cyan-300"><code>Example: helm repo update</code></p>
+                    <div class="bg-black/60 p-3 rounded font-mono text-[11px] text-cyan-300 border border-white/5">
+                        helm rollback my-app 1
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,55 +238,53 @@
 
   </main>
 
-  <footer class="text-center py-12 bg-black/40 border-t border-white/10 mt-12">
-    <p class="text-gray-500 text-sm">
-      © 2026 Kubernetes | <span class="text-blue-500">Manas Deshaboina</span>
+  <footer class="text-center py-16 bg-black/60 border-t border-white/10">
+    <div class="flex justify-center mb-6">
+        <i data-lucide="bot" class="text-gray-600"></i>
+    </div>
+    <p class="text-gray-500 text-xs font-mono uppercase tracking-[0.2em]">
+      &copy; 2026 Kubernetes Intelligence // <span class="text-blue-500">Manas Deshaboina</span>
     </p>
-    <div class="mt-4 flex justify-center gap-4 text-xs uppercase tracking-widest text-gray-600">
-        <span>Stability</span>
-        <span>•</span>
-        <span>Scalability</span>
-        <span>•</span>
-        <span>Availability</span>
+    <div class="mt-6 flex justify-center gap-6 text-[10px] uppercase tracking-widest text-gray-700 font-bold">
+        <span class="hover:text-cyan-400 transition cursor-default">Stability: Optimal</span>
+        <span>|</span>
+        <span class="hover:text-cyan-400 transition cursor-default">Connectivity: Secure</span>
     </div>
   </footer>
 
   <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
     function copyCommand(event, command) {
       event.stopPropagation();
       navigator.clipboard.writeText(command);
-      // Modern Toast/Alert
       const toast = document.createElement('div');
-      toast.className = 'fixed bottom-5 right-5 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-bounce';
-      toast.innerText = `Copied: ${command}`;
+      toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-cyan-600 text-white px-8 py-3 rounded-full shadow-2xl z-50 font-bold text-sm tracking-widest uppercase';
+      toast.innerText = `Data Copied: ${command}`;
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 2000);
     }
 
     const chartOptions = {
         responsive: true,
-        maintainAspectRatio: true,
         plugins: { legend: { display: false } },
         scales: {
-            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
-            x: { grid: { display: false }, ticks: { color: '#888' } }
+            y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#444', font: { family: 'JetBrains Mono' } } },
+            x: { grid: { display: false }, ticks: { color: '#444', font: { family: 'JetBrains Mono' } } }
         }
     };
 
     new Chart(document.getElementById('cpuChart'), {
       type: 'line',
       data: {
-        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
         datasets: [{
-          label: 'CPU Usage',
-          data: [25, 45, 38, 62, 55, 70],
-          borderColor: '#326ce5',
-          backgroundColor: 'rgba(50,108,229,0.1)',
+          data: [30, 55, 45, 80, 65, 90],
+          borderColor: '#00f2ff',
+          backgroundColor: 'rgba(0, 242, 255, 0.05)',
           fill: true,
-          tension: 0.4
+          tension: 0.4,
+          pointRadius: 0
         }]
       },
       options: chartOptions
@@ -271,11 +293,11 @@
     new Chart(document.getElementById('memoryChart'), {
       type: 'bar',
       data: {
-        labels: ['Node 1', 'Node 2', 'Node 3', 'Node 4', 'Node 5'],
+        labels: ['Node Alpha', 'Node Beta', 'Node Gamma', 'Node Delta'],
         datasets: [{
-          data: [2.1, 3.8, 1.5, 2.9, 3.2],
+          data: [4.5, 7.2, 3.1, 8.4],
           backgroundColor: '#326ce5',
-          borderRadius: 4
+          borderRadius: 8
         }]
       },
       options: chartOptions
