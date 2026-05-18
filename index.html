@@ -2,211 +2,269 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kubernetes Reference Guide</title>
+  <title>Kubernetes | Nautical Reference Guide</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Tailwind CSS CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <style>
+    :root {
+      --k8s-blue: #326ce5;
+      --deep-navy: #000c1d;
+    }
     body {
-      font-family: 'Inter', 'Montserrat', sans-serif;
-      background-color: #001f3f;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #001f3f 0%, #000c1d 100%);
+      background-attachment: fixed;
       color: #f5f5f5;
     }
-    .container-box {
-      background-color: #2a2a2a;
-      border: 2px solid #326ce5;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-      transition: transform 0.2s ease;
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      transition: all 0.3s ease;
     }
-    .container-box:hover {
-      transform: translateY(-4px);
+    .glass-card:hover {
+      border-color: var(--k8s-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(50, 108, 229, 0.3);
     }
     .accordion-content {
-      display: none;
-      margin-top: 10px;
-      background: #1a1a1a;
-      padding: 10px;
-      border-radius: 6px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
     }
-    .copy-btn {
-      background: #326ce5;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8em;
+    .accordion-open .accordion-content {
+      max-height: 200px;
+      margin-top: 12px;
     }
-    .copy-btn:hover {
-      background: #264b8c;
+    .terminal-header {
+      background: #333;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 12px;
+      display: flex;
+      gap: 6px;
     }
+    .dot { height: 10px; width: 10px; border-radius: 50%; }
+    code { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="bg-[#001f3f] text-gray-200">
+<body class="min-h-screen">
 
-  <!-- Hero Section -->
-  <section class="flex flex-col items-center justify-center text-center py-16 bg-[#001f3f]">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Helm Logo" class="w-40 mb-6">
-    <h1 class="text-4xl font-bold text-[#326ce5]">Kubernetes Reference Guide</h1>
-    <p class="mt-4 text-gray-400">Your nautical compass for container orchestration</p>
-  </section>
-
-  <!-- Charts Section -->
-  <section class="max-w-5xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-lg">
-      <h2 class="text-xl font-semibold text-[#326ce5] mb-4">CPU Utilization</h2>
-      <canvas id="cpuChart"></canvas>
+  <header class="relative flex flex-col items-center justify-center text-center py-24 px-6 overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-10">
+        <svg width="100%" height="100%"><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern><rect width="100%" height="100%" fill="url(#grid)" /></svg>
     </div>
-    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-lg">
-      <h2 class="text-xl font-semibold text-[#326ce5] mb-4">Memory Utilization</h2>
-      <canvas id="memoryChart"></canvas>
+    
+    <div class="relative z-10">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo" class="w-32 mb-8 animate-pulse">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">
+            Kubernetes <span class="text-[#326ce5]">Reference Guide</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Your nautical compass for container orchestration. Mastering the currents of the cloud-native seas.
+        </p>
     </div>
-  </section>
+  </header>
 
-  <!-- Command Explorer -->
-  <section class="max-w-4xl mx-auto px-6 py-12">
-    <h2 class="text-2xl font-bold text-[#326ce5] mb-6">Kubernetes Command Explorer</h2>
+  <main class="max-w-6xl mx-auto px-6 space-y-20 pb-24">
+    
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">📊</span>
+            <h2 class="text-3xl font-bold text-white">Live Cluster Metrics</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    CPU Utilization <span class="text-[#326ce5] text-sm">Real-time</span>
+                </h3>
+                <canvas id="cpuChart"></canvas>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    Memory Allocation <span class="text-[#326ce5] text-sm">Cluster Wide</span>
+                </h3>
+                <canvas id="memoryChart"></canvas>
+            </div>
+        </div>
+    </section>
 
-    <!-- Example Command Card -->
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl get</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl get pods')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> List resources (pods, deployments, services, etc.).</p>
-        <p><strong>Example:</strong> <code>kubectl get pods</code></p>
-        <p><strong>Flags:</strong> <code>-o wide</code>, <code>-n namespace</code></p>
-      </div>
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">🏗️</span>
+            <h2 class="text-3xl font-bold text-white">System Architecture</h2>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">API Server</h4>
+                    <p class="text-sm text-gray-400">The cluster's brain. Every administrative task goes through this communication hub.</p>
+                </div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Kubelet</h4>
+                    <p class="text-sm text-gray-400">The primary "node agent" that runs on each worker node to ensure containers are healthy.</p>
+                </div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Desired State</h4>
+                    <p class="text-sm text-gray-400">The system constantly reconciles what you <em>want</em> with what is <em>actually</em> running.</p>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-3">
+                <div class="rounded-lg overflow-hidden shadow-2xl border border-gray-700">
+                    <div class="terminal-header">
+                        <div class="dot bg-red-500"></div>
+                        <div class="dot bg-yellow-500"></div>
+                        <div class="dot bg-green-500"></div>
+                        <span class="text-xs text-gray-500 ml-2 font-mono">architecture_flow.ascii</span>
+                    </div>
+                    <div class="bg-black/80 p-8 font-mono text-sm text-green-400 overflow-x-auto">
+<pre>
+┌───────────────────┐        ┌───────────────────┐
+│   kubectl / CLI   │ ──────▶│   API Server      │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │       etcd        │
+                             └───────────────────┘
+                                       │
+                                       ▼
+┌───────────────────┐        ┌───────────────────┐
+│   Scheduler       │ ──────▶│   Kubelet (Node)  │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │    Containers     │
+                             └───────────────────┘
+</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">⌨️</span>
+            <h2 class="text-3xl font-bold text-white">Command Explorer</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl get</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl get pods')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> List resources like pods, services, or deployments.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl get pods -n kube-system</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl describe</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl describe pod')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Detailed inspection of a specific resource state and events.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl describe node worker-1</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl apply</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl apply -f config.yaml')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Declarative management of resources via YAML/JSON files.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl apply -f deployment.yaml</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl logs</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl logs -f')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Print the logs for a container in a pod.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl logs -f my-pod-xyz</code></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  </main>
+
+  <footer class="text-center py-12 bg-black/40 border-t border-white/10 mt-12">
+    <p class="text-gray-500 text-sm">
+      © 2026 Kubernetes Reference Guide | <span class="text-blue-500">Nautical & Industrial Design</span>
+    </p>
+    <div class="mt-4 flex justify-center gap-4 text-xs uppercase tracking-widest text-gray-600">
+        <span>Stability</span>
+        <span>•</span>
+        <span>Scalability</span>
+        <span>•</span>
+        <span>Availability</span>
     </div>
-
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl describe</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl describe pod pod-name')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> Show detailed information about a resource.</p>
-        <p><strong>Example:</strong> <code>kubectl describe pod pod-name</code></p>
-        <p><strong>Flags:</strong> <code>-n namespace</code></p>
-      </div>
-    </div>
-
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl apply</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl apply -f config.yaml')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> Apply configuration from a file.</p>
-        <p><strong>Example:</strong> <code>kubectl apply -f config.yaml</code></p>
-        <p><strong>Flags:</strong> <code>--dry-run</code>, <code>-n namespace</code></p>
-      </div>
-    </div>
-
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl delete</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl delete pod pod-name')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> Delete resources.</p>
-        <p><strong>Example:</strong> <code>kubectl delete pod pod-name</code></p>
-        <p><strong>Flags:</strong> <code>-n namespace</code>, <code>--force</code></p>
-      </div>
-    </div>
-
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl logs</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl logs pod-name')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> View logs of a container in a pod.</p>
-        <p><strong>Example:</strong> <code>kubectl logs pod-name</code></p>
-        <p><strong>Flags:</strong> <code>-f</code> (follow), <code>--tail</code></p>
-      </div>
-    </div>
-
-    <div class="container-box">
-      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
-        <span class="font-semibold">kubectl exec</span>
-        <button class="copy-btn" onclick="copyCommand(event, 'kubectl exec -it pod-name -- bash')">Copy</button>
-      </div>
-      <div class="accordion-content">
-        <p><strong>Purpose:</strong> Execute a command in a container.</p>
-        <p><strong>Example:</strong> <code>kubectl exec -it pod-name -- bash</code></p>
-        <p><strong>Flags:</strong> <code>-n namespace</code></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="text-center py-6 bg-[#001f3f] border-t border-[#326ce5]">
-    <p class="text-gray-400">© 2026 Kubernetes Reference Guide | Nautical & Industrial Theme</p>
   </footer>
 
-  <!-- Scripts -->
   <script>
-    // Accordion toggle
-    function toggleAccordion(element) {
-      const content = element.nextElementSibling;
-      content.style.display = content.style.display === "block" ? "none" : "block";
-    }
-
     // Copy to clipboard
     function copyCommand(event, command) {
       event.stopPropagation();
       navigator.clipboard.writeText(command);
-      alert("Copied: " + command);
+      // Optional: replace alert with a toast for better UX
+      alert("Command Copied: " + command);
     }
 
-    // Chart.js CPU Utilization
-    const cpuCtx = document.getElementById('cpuChart').getContext('2d');
-    const cpuChart = new Chart(cpuCtx, {
+    // Chart.js Setup
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+            x: { grid: { display: false }, ticks: { color: '#888' } }
+        }
+    };
+
+    // CPU Chart
+    new Chart(document.getElementById('cpuChart'), {
       type: 'line',
       data: {
-        labels: Array.from({length: 10}, (_, i) => i+1),
+        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
         datasets: [{
-          label: 'CPU %',
-          data: [20, 35, 40, 55, 45, 60, 70, 65, 50, 55],
+          label: 'CPU Usage',
+          data: [25, 45, 38, 62, 55, 70],
           borderColor: '#326ce5',
-          backgroundColor: 'rgba(50,108,229,0.2)',
+          backgroundColor: 'rgba(50,108,229,0.1)',
           fill: true,
           tension: 0.4
         }]
       },
-      options: {
-        responsive: true,
-        animation: { duration: 2000 },
-        scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#f5f5f5' }, grid: { color: '#444' } }, x: { ticks: { color: '#f5f5f5' }, grid: { color: '#444' } } },
-        plugins: { legend: { labels: { color: '#f5f5f5' } } }
-      }
+      options: chartOptions
     });
 
-    // Chart.js Memory Utilization
-    const memoryCtx = document.getElementById('memoryChart').getContext('2d');
-    const memoryChart = new Chart(memoryCtx, {
+    // Memory Chart
+    new Chart(document.getElementById('memoryChart'), {
       type: 'bar',
       data: {
-        labels: Array.from({length: 10}, (_, i) => i+1),
+        labels: ['Node 1', 'Node 2', 'Node 3', 'Node 4', 'Node 5'],
         datasets: [{
-          label: 'Memory (GB)',
-          data: [1.2, 2.1, 1.8, 2.5, 2.3, 2.8, 3.1, 2.9, 2.4, 2.6],
-          backgroundColor: 'rgba(50,108,229,0.6)',
-          borderColor: '#326ce5',
-          borderWidth: 2
+          data: [2.1, 3.8, 1.5, 2.9, 3.2],
+          backgroundColor: '#326ce5',
+          borderRadius: 4
         }]
       },
-      options: {
-        responsive: true,
-        animation: { duration: 2000 },
-        scales: { y: { beginAtZero: true, max: 4, ticks: { color: '#f5f5f5' }, grid: { color: '#444' } }, x: { ticks: { color: '#f5f5f5' }, grid: { color: '#444' } } },
-        plugins: { legend: { labels: { color: '#f5f5f5' } } }
-      }
+      options: chartOptions
     });
   </script>
 </body>
