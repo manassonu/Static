@@ -2,160 +2,212 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kubernetes Usage Dashboard</title>
+  <title>Kubernetes Reference Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      margin: 0;
-      background: #f4f6f9;
-      color: #333;
+      font-family: 'Inter', 'Montserrat', sans-serif;
+      background-color: #001f3f;
+      color: #f5f5f5;
     }
-    header {
-      text-align: center;
-      padding: 30px;
-      background: #326ce5;
-      color: white;
-    }
-    header img {
-      width: 100px;
-      margin-bottom: 10px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.2em;
-    }
-    main {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 20px;
-    }
-    h2 {
-      color: #326ce5;
-      border-bottom: 2px solid #326ce5;
-      padding-bottom: 5px;
-    }
-    .commands ul {
-      list-style: none;
-      padding: 0;
-    }
-    .commands li {
-      background: #e9f0fb;
-      margin: 10px 0;
-      padding: 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .commands li:hover {
-      background: #d0e2fa;
-    }
-    .output {
-      display: none;
-      margin-top: 8px;
-      padding: 10px;
-      background: #fff;
-      border-left: 4px solid #326ce5;
-      font-family: monospace;
-    }
-    .stats {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
+    .container-box {
+      background-color: #2a2a2a;
+      border: 2px solid #326ce5;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 16px;
+      margin-bottom: 16px;
+      transition: transform 0.2s ease;
     }
-    .card h3 {
-      margin-top: 0;
-      color: #326ce5;
+    .container-box:hover {
+      transform: translateY(-4px);
     }
-    .cost {
-      font-size: 1.2em;
-      color: #28a745;
+    .accordion-content {
+      display: none;
+      margin-top: 10px;
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 6px;
     }
-    footer {
-      text-align: center;
-      padding: 15px;
+    .copy-btn {
       background: #326ce5;
       color: white;
-      margin-top: 40px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .copy-btn:hover {
+      background: #264b8c;
     }
   </style>
 </head>
-<body>
-  <header>
-    <!-- Kubernetes logo -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo">
-    <h1>Kubernetes Usage Dashboard</h1>
-  </header>
+<body class="bg-[#001f3f] text-gray-200">
 
-  <main>
-    <section class="commands">
-      <h2>Interactive Commands</h2>
-      <ul>
-        <li onclick="showOutput(this, 'Lists all pods currently running in the cluster.')">
-          <strong>kubectl get pods</strong>
-          <div class="output"></div>
-        </li>
-        <li onclick="showOutput(this, 'Creates a deployment named nginx using the nginx image.')">
-          <strong>kubectl create deployment nginx --image=nginx</strong>
-          <div class="output"></div>
-        </li>
-        <li onclick="showOutput(this, 'Exposes the nginx deployment on port 80 with a LoadBalancer.')">
-          <strong>kubectl expose deployment nginx --port=80 --type=LoadBalancer</strong>
-          <div class="output"></div>
-        </li>
-        <li onclick="showOutput(this, 'Scales the nginx deployment to 3 replicas.')">
-          <strong>kubectl scale deployment nginx --replicas=3</strong>
-          <div class="output"></div>
-        </li>
-        <li onclick="showOutput(this, 'Deletes the specified pod.')">
-          <strong>kubectl delete pod pod-name</strong>
-          <div class="output"></div>
-        </li>
-      </ul>
-    </section>
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center text-center py-16 bg-[#001f3f]">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Helm Logo" class="w-40 mb-6">
+    <h1 class="text-4xl font-bold text-[#326ce5]">Kubernetes Reference Guide</h1>
+    <p class="mt-4 text-gray-400">Your nautical compass for container orchestration</p>
+  </section>
 
-    <section class="stats">
-      <div class="card">
-        <h3>Node 1 (VM)</h3>
-        <p>CPU Usage: 65%</p>
-        <p>Memory Usage: 2.5 GB / 4 GB</p>
-        <p class="cost">Cost: $0.12/hour</p>
-      </div>
-      <div class="card">
-        <h3>Node 2 (VM)</h3>
-        <p>CPU Usage: 40%</p>
-        <p>Memory Usage: 1.8 GB / 4 GB</p>
-        <p class="cost">Cost: $0.10/hour</p>
-      </div>
-      <div class="card">
-        <h3>Node 3 (VM)</h3>
-        <p>CPU Usage: 75%</p>
-        <p>Memory Usage: 3.2 GB / 4 GB</p>
-        <p class="cost">Cost: $0.15/hour</p>
-      </div>
-    </section>
-  </main>
+  <!-- Charts Section -->
+  <section class="max-w-5xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-lg">
+      <h2 class="text-xl font-semibold text-[#326ce5] mb-4">CPU Utilization</h2>
+      <canvas id="cpuChart"></canvas>
+    </div>
+    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-lg">
+      <h2 class="text-xl font-semibold text-[#326ce5] mb-4">Memory Utilization</h2>
+      <canvas id="memoryChart"></canvas>
+    </div>
+  </section>
 
-  <footer>
-    <p>© 2026 Kubernetes Usage Guide | Designed for learners</p>
+  <!-- Command Explorer -->
+  <section class="max-w-4xl mx-auto px-6 py-12">
+    <h2 class="text-2xl font-bold text-[#326ce5] mb-6">Kubernetes Command Explorer</h2>
+
+    <!-- Example Command Card -->
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl get</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl get pods')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> List resources (pods, deployments, services, etc.).</p>
+        <p><strong>Example:</strong> <code>kubectl get pods</code></p>
+        <p><strong>Flags:</strong> <code>-o wide</code>, <code>-n namespace</code></p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl describe</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl describe pod pod-name')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> Show detailed information about a resource.</p>
+        <p><strong>Example:</strong> <code>kubectl describe pod pod-name</code></p>
+        <p><strong>Flags:</strong> <code>-n namespace</code></p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl apply</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl apply -f config.yaml')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> Apply configuration from a file.</p>
+        <p><strong>Example:</strong> <code>kubectl apply -f config.yaml</code></p>
+        <p><strong>Flags:</strong> <code>--dry-run</code>, <code>-n namespace</code></p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl delete</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl delete pod pod-name')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> Delete resources.</p>
+        <p><strong>Example:</strong> <code>kubectl delete pod pod-name</code></p>
+        <p><strong>Flags:</strong> <code>-n namespace</code>, <code>--force</code></p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl logs</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl logs pod-name')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> View logs of a container in a pod.</p>
+        <p><strong>Example:</strong> <code>kubectl logs pod-name</code></p>
+        <p><strong>Flags:</strong> <code>-f</code> (follow), <code>--tail</code></p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div onclick="toggleAccordion(this)" class="cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">kubectl exec</span>
+        <button class="copy-btn" onclick="copyCommand(event, 'kubectl exec -it pod-name -- bash')">Copy</button>
+      </div>
+      <div class="accordion-content">
+        <p><strong>Purpose:</strong> Execute a command in a container.</p>
+        <p><strong>Example:</strong> <code>kubectl exec -it pod-name -- bash</code></p>
+        <p><strong>Flags:</strong> <code>-n namespace</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 bg-[#001f3f] border-t border-[#326ce5]">
+    <p class="text-gray-400">© 2026 Kubernetes Reference Guide | Nautical & Industrial Theme</p>
   </footer>
 
+  <!-- Scripts -->
   <script>
-    function showOutput(element, message) {
-      const outputDiv = element.querySelector('.output');
-      if (outputDiv.style.display === "block") {
-        outputDiv.style.display = "none";
-      } else {
-        outputDiv.innerText = message;
-        outputDiv.style.display = "block";
-      }
+    // Accordion toggle
+    function toggleAccordion(element) {
+      const content = element.nextElementSibling;
+      content.style.display = content.style.display === "block" ? "none" : "block";
     }
+
+    // Copy to clipboard
+    function copyCommand(event, command) {
+      event.stopPropagation();
+      navigator.clipboard.writeText(command);
+      alert("Copied: " + command);
+    }
+
+    // Chart.js CPU Utilization
+    const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+    const cpuChart = new Chart(cpuCtx, {
+      type: 'line',
+      data: {
+        labels: Array.from({length: 10}, (_, i) => i+1),
+        datasets: [{
+          label: 'CPU %',
+          data: [20, 35, 40, 55, 45, 60, 70, 65, 50, 55],
+          borderColor: '#326ce5',
+          backgroundColor: 'rgba(50,108,229,0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 2000 },
+        scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#f5f5f5' }, grid: { color: '#444' } }, x: { ticks: { color: '#f5f5f5' }, grid: { color: '#444' } } },
+        plugins: { legend: { labels: { color: '#f5f5f5' } } }
+      }
+    });
+
+    // Chart.js Memory Utilization
+    const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+    const memoryChart = new Chart(memoryCtx, {
+      type: 'bar',
+      data: {
+        labels: Array.from({length: 10}, (_, i) => i+1),
+        datasets: [{
+          label: 'Memory (GB)',
+          data: [1.2, 2.1, 1.8, 2.5, 2.3, 2.8, 3.1, 2.9, 2.4, 2.6],
+          backgroundColor: 'rgba(50,108,229,0.6)',
+          borderColor: '#326ce5',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 2000 },
+        scales: { y: { beginAtZero: true, max: 4, ticks: { color: '#f5f5f5' }, grid: { color: '#444' } }, x: { ticks: { color: '#f5f5f5' }, grid: { color: '#444' } } },
+        plugins: { legend: { labels: { color: '#f5f5f5' } } }
+      }
+    });
   </script>
 </body>
 </html>
