@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DevOps & Frontend | Nautical Command Center</title>
+  <title>Kubernetes | Nautical Reference Guide</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,197 +11,191 @@
   <style>
     :root {
       --k8s-blue: #326ce5;
-      --react-cyan: #61dafb;
-      --angular-red: #dd0031;
-      --glass: rgba(255, 255, 255, 0.03);
+      --deep-navy: #000c1d;
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top right, #001f3f, #000c1d);
+      background: linear-gradient(135deg, #001f3f 0%, #000c1d 100%);
       background-attachment: fixed;
       color: #f5f5f5;
     }
     .glass-card {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 12px;
+      transition: all 0.3s ease;
     }
     .glass-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      border-color: var(--k8s-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(50, 108, 229, 0.3);
     }
-    .nav-blur {
-      backdrop-filter: blur(20px);
-      background: rgba(0, 12, 29, 0.7);
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
     }
-    .react-border { border-left: 4px solid var(--react-cyan); }
-    .angular-border { border-left: 4px solid var(--angular-red); }
-    .k8s-border { border-left: 4px solid var(--k8s-blue); }
-    
-    .tech-pill {
-        @apply px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider;
+    .accordion-open .accordion-content {
+      max-height: 200px;
+      margin-top: 12px;
     }
+    .terminal-header {
+      background: #333;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 12px;
+      display: flex;
+      gap: 6px;
+    }
+    .dot { height: 10px; width: 10px; border-radius: 50%; }
+    code { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
 <body class="min-h-screen">
 
-  <nav class="fixed top-0 w-full z-50 nav-blur border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-[#326ce5] rounded-lg rotate-45 flex items-center justify-center">
-            <span class="rotate-[-45deg] font-bold text-white text-xs">CC</span>
-        </div>
-        <span class="font-bold tracking-tighter text-lg">NAUTICAL<span class="text-blue-500">DASH</span></span>
-      </div>
-      <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-        <a href="#k8s" class="hover:text-blue-400 transition">Kubernetes</a>
-        <a href="#react" class="hover:text-cyan-400 transition">React</a>
-        <a href="#angular" class="hover:text-red-400 transition">Angular</a>
-      </div>
+  <header class="relative flex flex-col items-center justify-center text-center py-24 px-6 overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-10">
+        <svg width="100%" height="100%"><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern><rect width="100%" height="100%" fill="url(#grid)" /></svg>
     </div>
-  </nav>
-
-  <header class="pt-32 pb-16 px-6 text-center">
-    <h1 class="text-6xl font-black mb-4 tracking-tight">Technical <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-red-500">Manifest</span></h1>
-    <p class="text-gray-400 text-lg max-w-2xl mx-auto">A unified shipyard for modern cloud and frontend orchestration.</p>
+    
+    <div class="relative z-10">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo" class="w-32 mb-8 animate-pulse">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">
+            Kubernetes <span class="text-[#326ce5]">Reference Guide</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Your nautical compass for container orchestration. Mastering the currents of the cloud-native seas.
+        </p>
+    </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 space-y-24 pb-32">
-
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="glass-card p-6 lg:col-span-2">
-            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-                <span class="text-blue-400">📈</span> Ecosystem Comparison
-            </h3>
-            <canvas id="ecosystemChart" height="120"></canvas>
+  <main class="max-w-6xl mx-auto px-6 space-y-20 pb-24">
+    
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">📊</span>
+            <h2 class="text-3xl font-bold text-white">Live Cluster Metrics</h2>
         </div>
-        <div class="glass-card p-6 flex flex-col justify-center">
-            <h4 class="text-sm uppercase tracking-widest text-gray-500 mb-4">Current Fleet Status</h4>
-            <div class="space-y-6">
-                <div>
-                    <div class="flex justify-between text-xs mb-1"><span>K8S STABILITY</span><span>98%</span></div>
-                    <div class="w-full bg-white/10 h-1.5 rounded-full"><div class="bg-blue-500 h-full rounded-full" style="width: 98%"></div></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    CPU Utilization <span class="text-[#326ce5] text-sm">Real-time</span>
+                </h3>
+                <canvas id="cpuChart"></canvas>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    Memory Allocation <span class="text-[#326ce5] text-sm">Cluster Wide</span>
+                </h3>
+                <canvas id="memoryChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">🏗️</span>
+            <h2 class="text-3xl font-bold text-white">System Architecture</h2>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">API Server</h4>
+                    <p class="text-sm text-gray-400">The cluster's brain. Every administrative task goes through this communication hub.</p>
                 </div>
-                <div>
-                    <div class="flex justify-between text-xs mb-1"><span>REACT HYDRATION</span><span>82%</span></div>
-                    <div class="w-full bg-white/10 h-1.5 rounded-full"><div class="bg-cyan-400 h-full rounded-full" style="width: 82%"></div></div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Kubelet</h4>
+                    <p class="text-sm text-gray-400">The primary "node agent" that runs on each worker node to ensure containers are healthy.</p>
                 </div>
-                <div>
-                    <div class="flex justify-between text-xs mb-1"><span>ANGULAR COMPILATION</span><span>91%</span></div>
-                    <div class="w-full bg-white/10 h-1.5 rounded-full"><div class="bg-red-500 h-full rounded-full" style="width: 91%"></div></div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Desired State</h4>
+                    <p class="text-sm text-gray-400">The system constantly reconciles what you <em>want</em> with what is <em>actually</em> running.</p>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-3">
+                <div class="rounded-lg overflow-hidden shadow-2xl border border-gray-700">
+                    <div class="terminal-header">
+                        <div class="dot bg-red-500"></div>
+                        <div class="dot bg-yellow-500"></div>
+                        <div class="dot bg-green-500"></div>
+                        <span class="text-xs text-gray-500 ml-2 font-mono">architecture_flow.ascii</span>
+                    </div>
+                    <div class="bg-black/80 p-8 font-mono text-sm text-green-400 overflow-x-auto">
+<pre>
+┌───────────────────┐        ┌───────────────────┐
+│   kubectl / CLI   │ ──────▶│   API Server      │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │       etcd        │
+                             └───────────────────┘
+                                       │
+                                       ▼
+┌───────────────────┐        ┌───────────────────┐
+│   Scheduler       │ ──────▶│   Kubelet (Node)  │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │    Containers     │
+                             └───────────────────┘
+</pre>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="react" class="scroll-mt-24">
-        <div class="flex items-center gap-4 mb-10">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" class="w-12 h-12 animate-[spin_10s_linear_infinite]" alt="React">
-            <div>
-                <h2 class="text-4xl font-bold text-white">React Engine</h2>
-                <p class="text-cyan-400 text-sm font-mono">Declarative • Component-Based • Virtual DOM</p>
-            </div>
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">⌨️</span>
+            <h2 class="text-3xl font-bold text-white">Command Explorer</h2>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass-card p-8 react-border relative overflow-hidden">
-                <h3 class="text-lg font-bold mb-6">Hooks Lifecycle Logic</h3>
-                <div class="relative space-y-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs">1</div>
-                        <div class="flex-1 bg-black/40 p-3 rounded-lg border border-white/5 font-mono text-xs">
-                            <span class="text-purple-400">useState</span> (Initialization)
-                        </div>
-                    </div>
-                    <div class="ml-5 border-l-2 border-dashed border-cyan-500/30 h-8"></div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs">2</div>
-                        <div class="flex-1 bg-black/40 p-3 rounded-lg border border-white/5 font-mono text-xs">
-                            <span class="text-blue-400">Render</span> (JSX Generation)
-                        </div>
-                    </div>
-                    <div class="ml-5 border-l-2 border-dashed border-cyan-500/30 h-8"></div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs">3</div>
-                        <div class="flex-1 bg-black/40 p-3 rounded-lg border border-white/5 font-mono text-xs">
-                            <span class="text-green-400">useEffect</span> (Side Effects / Commit)
-                        </div>
-                    </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl get</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl get pods')">COPY</button>
                 </div>
-             </div>
-
-             <div class="space-y-4">
-                <div class="glass-card p-5 flex justify-between items-center group">
-                    <div>
-                        <code class="text-cyan-300 font-bold">npx create-react-app</code>
-                        <p class="text-xs text-gray-500 mt-1">Bootstraps a new project</p>
-                    </div>
-                    <button class="opacity-0 group-hover:opacity-100 bg-cyan-600 px-4 py-1 rounded text-xs transition">COPY</button>
-                </div>
-                <div class="glass-card p-5 flex justify-between items-center group">
-                    <div>
-                        <code class="text-cyan-300 font-bold">useMemo(() => ..., [])</code>
-                        <p class="text-xs text-gray-500 mt-1">Performance: Memoize values</p>
-                    </div>
-                    <button class="opacity-0 group-hover:opacity-100 bg-cyan-600 px-4 py-1 rounded text-xs transition">COPY</button>
-                </div>
-             </div>
-        </div>
-    </section>
-
-    <section id="angular" class="scroll-mt-24">
-        <div class="flex items-center gap-4 mb-10">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Angular_full_color_logo.svg" class="w-12 h-12" alt="Angular">
-            <div>
-                <h2 class="text-4xl font-bold text-white">Angular Command</h2>
-                <p class="text-red-500 text-sm font-mono">Enterprise • TypeScript • Dependency Injection</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 glass-card p-8 angular-border">
-                <h3 class="text-lg font-bold mb-8">Architecture Module Flow</h3>
-                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div class="w-32 h-32 rounded-xl border-2 border-red-500/50 flex flex-col items-center justify-center text-center p-2 bg-red-500/10">
-                        <span class="text-[10px] text-red-300">TEMPLATE</span>
-                        <div class="text-xs font-bold">HTML + CSS</div>
-                    </div>
-                    <div class="text-2xl text-gray-600">⇄</div>
-                    <div class="w-40 h-40 rounded-full border-4 border-red-600 flex flex-col items-center justify-center text-center p-4 bg-black/40 shadow-[0_0_30px_rgba(221,0,49,0.2)]">
-                        <span class="text-[10px] text-gray-400 font-mono">COMPONENT</span>
-                        <div class="text-sm font-bold">TypeScript Logic</div>
-                    </div>
-                    <div class="text-2xl text-gray-600">⇄</div>
-                    <div class="w-32 h-32 rounded-xl border-2 border-blue-500/50 flex flex-col items-center justify-center text-center p-2 bg-blue-500/10">
-                        <span class="text-[10px] text-blue-300">SERVICE</span>
-                        <div class="text-xs font-bold">DI / RxJS</div>
-                    </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> List resources like pods, services, or deployments.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl get pods -n kube-system</code></p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div class="glass-card p-4 bg-red-500/5">
-                    <h4 class="text-xs font-bold text-red-400 mb-2 uppercase">Core CLI</h4>
-                    <div class="font-mono text-sm space-y-2">
-                        <div class="flex justify-between items-center group cursor-pointer" onclick="copyText('ng generate component')">
-                            <span class="text-gray-300">ng g c</span>
-                            <span class="text-[10px] bg-red-900/40 px-1 rounded text-red-200">COMPONENT</span>
-                        </div>
-                        <div class="flex justify-between items-center group cursor-pointer" onclick="copyText('ng build --prod')">
-                            <span class="text-gray-300">ng build</span>
-                            <span class="text-[10px] bg-red-900/40 px-1 rounded text-red-200">PRODUCTION</span>
-                        </div>
-                    </div>
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl describe</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl describe pod')">COPY</button>
                 </div>
-                <div class="glass-card p-6 border-t border-white/5">
-                    <h4 class="text-sm font-bold mb-3">Directives</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-pill bg-white/5 text-gray-300 border border-white/10">*ngIf</span>
-                        <span class="tech-pill bg-white/5 text-gray-300 border border-white/10">*ngFor</span>
-                        <span class="tech-pill bg-white/5 text-gray-300 border border-white/10">[(ngModel)]</span>
-                    </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Detailed inspection of a specific resource state and events.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl describe node worker-1</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl apply</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl apply -f config.yaml')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Declarative management of resources via YAML/JSON files.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl apply -f deployment.yaml</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl logs</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl logs -f')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Print the logs for a container in a pod.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl logs -f my-pod-xyz</code></p>
                 </div>
             </div>
         </div>
@@ -209,64 +203,68 @@
 
   </main>
 
-  <footer class="py-20 border-t border-white/5 bg-black/20 text-center">
-    <p class="text-gray-500 text-sm tracking-widest uppercase">System Operational • Time: 2026.05.18</p>
+  <footer class="text-center py-12 bg-black/40 border-t border-white/10 mt-12">
+    <p class="text-gray-500 text-sm">
+      © 2026 Kubernetes Reference Guide | <span class="text-blue-500">Nautical & Industrial Design</span>
+    </p>
+    <div class="mt-4 flex justify-center gap-4 text-xs uppercase tracking-widest text-gray-600">
+        <span>Stability</span>
+        <span>•</span>
+        <span>Scalability</span>
+        <span>•</span>
+        <span>Availability</span>
+    </div>
   </footer>
 
   <script>
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        // Minimal visual feedback
-        const btn = event.currentTarget;
-        const original = btn.innerHTML;
-        btn.innerHTML = '<span class="text-green-400">COPIED!</span>';
-        setTimeout(() => btn.innerHTML = original, 1000);
+    // Copy to clipboard
+    function copyCommand(event, command) {
+      event.stopPropagation();
+      navigator.clipboard.writeText(command);
+      // Optional: replace alert with a toast for better UX
+      alert("Command Copied: " + command);
     }
 
-    // Chart.js Configuration
-    const ctx = document.getElementById('ecosystemChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-            datasets: [
-                {
-                    label: 'React Usage',
-                    data: [60, 68, 72, 78, 82, 85],
-                    borderColor: '#61dafb',
-                    backgroundColor: 'rgba(97, 218, 251, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Angular Usage',
-                    data: [45, 42, 40, 41, 43, 44],
-                    borderColor: '#dd0031',
-                    backgroundColor: 'rgba(221, 0, 49, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Kubernetes Adoption',
-                    data: [30, 45, 58, 70, 85, 92],
-                    borderColor: '#326ce5',
-                    borderDash: [5, 5],
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: { color: '#888', font: { family: 'JetBrains Mono', size: 10 } }
-                }
-            },
-            scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555' } },
-                x: { grid: { display: false }, ticks: { color: '#555' } }
-            }
+    // Chart.js Setup
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+            x: { grid: { display: false }, ticks: { color: '#888' } }
         }
+    };
+
+    // CPU Chart
+    new Chart(document.getElementById('cpuChart'), {
+      type: 'line',
+      data: {
+        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+        datasets: [{
+          label: 'CPU Usage',
+          data: [25, 45, 38, 62, 55, 70],
+          borderColor: '#326ce5',
+          backgroundColor: 'rgba(50,108,229,0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: chartOptions
+    });
+
+    // Memory Chart
+    new Chart(document.getElementById('memoryChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Node 1', 'Node 2', 'Node 3', 'Node 4', 'Node 5'],
+        datasets: [{
+          data: [2.1, 3.8, 1.5, 2.9, 3.2],
+          backgroundColor: '#326ce5',
+          borderRadius: 4
+        }]
+      },
+      options: chartOptions
     });
   </script>
 </body>
