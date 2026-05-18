@@ -1,194 +1,271 @@
-import React, { useState } from 'react';
-import { 
-  Anchor, Terminal, Activity, Layers, 
-  ChevronDown, Copy, Cpu, Database, Ship 
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, 
-  Tooltip, ResponsiveContainer, BarChart, Bar, Cell 
-} from 'recharts';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kubernetes | Nautical Reference Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --k8s-blue: #326ce5;
+      --deep-navy: #000c1d;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #001f3f 0%, #000c1d 100%);
+      background-attachment: fixed;
+      color: #f5f5f5;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      border-color: var(--k8s-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(50, 108, 229, 0.3);
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .accordion-open .accordion-content {
+      max-height: 200px;
+      margin-top: 12px;
+    }
+    .terminal-header {
+      background: #333;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 12px;
+      display: flex;
+      gap: 6px;
+    }
+    .dot { height: 10px; width: 10px; border-radius: 50%; }
+    code { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-screen">
 
-// --- Mock Data ---
-const cpuData = [
-  { time: '10:00', usage: 25 }, { time: '10:05', usage: 45 },
-  { time: '10:10', usage: 38 }, { time: '10:15', usage: 62 },
-  { time: '10:20', usage: 55 }, { time: '10:25', usage: 70 },
-];
-
-const memoryData = [
-  { node: 'Node 1', val: 2.1 }, { node: 'Node 2', val: 3.8 },
-  { node: 'Node 3', val: 1.5 }, { node: 'Node 4', val: 2.9 },
-  { node: 'Node 5', val: 3.2 },
-];
-
-const commands = [
-  { cmd: 'kubectl get pods', desc: 'List resources like pods or services.', example: 'kubectl get pods -n kube-system' },
-  { cmd: 'kubectl describe pod', desc: 'Detailed inspection of resource state.', example: 'kubectl describe node worker-1' },
-  { cmd: 'kubectl apply -f', desc: 'Declarative management via YAML.', example: 'kubectl apply -f deployment.yaml' },
-  { cmd: 'kubectl logs -f', desc: 'Stream logs from a container.', example: 'kubectl logs -f my-pod-xyz' },
-];
-
-// --- Components ---
-
-const GlassCard = ({ children, className = "" }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl ${className}`}
-  >
-    {children}
-  </motion.div>
-);
-
-const ArchitectureNode = ({ icon: Icon, title, desc, color }) => (
-  <div className="flex flex-col items-center text-center space-y-2 p-4">
-    <div className={`p-4 rounded-full bg-slate-900 border-2 ${color} shadow-lg shadow-blue-500/20`}>
-      <Icon className="w-6 h-6 text-white" />
+  <header class="relative flex flex-col items-center justify-center text-center py-24 px-6 overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-10">
+        <svg width="100%" height="100%"><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern><rect width="100%" height="100%" fill="url(#grid)" /></svg>
     </div>
-    <h4 className="font-bold text-sm text-white">{title}</h4>
-    <p className="text-[10px] text-gray-400 max-w-[120px]">{desc}</p>
-  </div>
-);
+    
+    <div class="relative z-10">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="Kubernetes Logo" class="w-32 mb-8 animate-pulse">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">
+            Kubernetes <span class="text-[#326ce5]">Reference Guide</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Your nautical compass for container orchestration. Mastering the currents of the cloud-native seas.
+        </p>
+    </div>
+  </header>
 
-export default function K8sDashboard() {
-  const [openCmd, setOpenCmd] = useState(null);
-
-  return (
-    <div className="min-h-screen bg-[#000c1d] text-slate-200 selection:bg-blue-500/30 font-sans pb-20">
-      {/* Background Mesh/Grid */}
-      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#326ce5_0%,transparent_50%)]" />
-        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(#ffffff10 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <header className="py-20 flex flex-col items-center text-center">
-          <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="mb-8"
-          >
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" className="w-24 h-24 drop-shadow-[0_0_30px_rgba(50,108,229,0.5)]" alt="logo" />
-          </motion.div>
-          <h1 className="text-6xl font-black tracking-tighter text-white mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-blue-400">
-            KUBERNETES <span className="font-light italic">MANIFEST</span>
-          </h1>
-          <p className="text-blue-400/80 font-mono tracking-widest text-sm uppercase">
-            System Operational // Nautical Navigation Unit 07
-          </p>
-        </header>
-
-        {/* Top Metrics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
-          <GlassCard className="lg:col-span-2">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="flex items-center gap-2 font-bold text-lg"><Activity size={20} className="text-blue-500"/> CPU Usage</h3>
-              <span className="text-xs font-mono text-blue-400">LIVE_TELEMETRY</span>
-            </div>
-            <div className="h-[250px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={cpuData}>
-                  <defs>
-                    <linearGradient id="colorUsage" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#326ce5" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#326ce5" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis dataKey="time" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: 'none', borderRadius: '8px' }} />
-                  <Area type="monotone" dataKey="usage" stroke="#326ce5" strokeWidth={3} fillOpacity={1} fill="url(#colorUsage)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </GlassCard>
-
-          <GlassCard>
-             <h3 className="flex items-center gap-2 font-bold text-lg mb-6"><Cpu size={20} className="text-blue-500"/> Node Memory</h3>
-             <div className="h-[250px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={memoryData}>
-                  <Bar dataKey="val" radius={[4, 4, 0, 0]}>
-                    {memoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === 1 ? '#326ce5' : '#1e293b'} />
-                    ))}
-                  </Bar>
-                  <XAxis dataKey="node" stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
-                </BarChart>
-              </ResponsiveContainer>
-             </div>
-          </GlassCard>
+  <main class="max-w-6xl mx-auto px-6 space-y-20 pb-24">
+    
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">📊</span>
+            <h2 class="text-3xl font-bold text-white">Live Cluster Metrics</h2>
         </div>
-
-        {/* Visual Architecture */}
-        <section className="mb-20">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/20" />
-            <h2 className="text-2xl font-bold flex items-center gap-3"><Layers className="text-blue-500"/> Cluster Topography</h2>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/20" />
-          </div>
-
-          <GlassCard className="relative overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative z-10 items-center">
-              <ArchitectureNode icon={Terminal} title="Control Plane" desc="API Server / CLI Interface" color="border-blue-500" />
-              <div className="hidden md:block h-px bg-blue-500/30" />
-              <ArchitectureNode icon={Database} title="etcd" desc="State Store & Truth" color="border-purple-500" />
-              <div className="hidden md:block h-px bg-blue-500/30" />
-              <ArchitectureNode icon={Ship} title="Worker Node" desc="Kubelet & Container Runtime" color="border-cyan-500" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    CPU Utilization <span class="text-[#326ce5] text-sm">Real-time</span>
+                </h3>
+                <canvas id="cpuChart"></canvas>
             </div>
-            {/* Visual background element */}
-            <div className="absolute top-1/2 left-0 w-full h-24 bg-blue-500/5 blur-[100px] -translate-y-1/2" />
-          </GlassCard>
-        </section>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-medium text-gray-300 mb-4 flex justify-between">
+                    Memory Allocation <span class="text-[#326ce5] text-sm">Cluster Wide</span>
+                </h3>
+                <canvas id="memoryChart"></canvas>
+            </div>
+        </div>
+    </section>
 
-        {/* Interaction: Command Explorer */}
-        <section>
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3"><Anchor className="text-blue-500"/> Command Explorer</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {commands.map((item, idx) => (
-              <div key={idx} className="group">
-                <div 
-                  onClick={() => setOpenCmd(openCmd === idx ? null : idx)}
-                  className="bg-white/5 border border-white/10 p-4 rounded-xl cursor-pointer hover:border-blue-500/50 transition-all flex justify-between items-center"
-                >
-                  <code className="text-blue-400 font-bold">{item.cmd}</code>
-                  <div className="flex items-center gap-4">
-                    <button className="p-2 hover:bg-blue-500/20 rounded-lg text-gray-500 hover:text-blue-400 transition">
-                      <Copy size={16} />
-                    </button>
-                    <ChevronDown size={18} className={`transition-transform ${openCmd === idx ? 'rotate-180' : ''}`} />
-                  </div>
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">🏗️</span>
+            <h2 class="text-3xl font-bold text-white">System Architecture</h2>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">API Server</h4>
+                    <p class="text-sm text-gray-400">The cluster's brain. Every administrative task goes through this communication hub.</p>
                 </div>
-                <AnimatePresence>
-                  {openCmd === idx && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-4 mt-2 bg-blue-500/5 rounded-xl border border-blue-500/20 text-sm">
-                        <p className="text-gray-400 mb-2">{item.desc}</p>
-                        <div className="bg-black/40 p-3 rounded font-mono text-xs text-blue-300">
-                          $ {item.example}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Kubelet</h4>
+                    <p class="text-sm text-gray-400">The primary "node agent" that runs on each worker node to ensure containers are healthy.</p>
+                </div>
+                <div class="glass-card p-5 border-l-4 border-l-[#326ce5]">
+                    <h4 class="font-bold text-blue-400 mb-1">Desired State</h4>
+                    <p class="text-sm text-gray-400">The system constantly reconciles what you <em>want</em> with what is <em>actually</em> running.</p>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-3">
+                <div class="rounded-lg overflow-hidden shadow-2xl border border-gray-700">
+                    <div class="terminal-header">
+                        <div class="dot bg-red-500"></div>
+                        <div class="dot bg-yellow-500"></div>
+                        <div class="dot bg-green-500"></div>
+                        <span class="text-xs text-gray-500 ml-2 font-mono">architecture_flow.ascii</span>
+                    </div>
+                    <div class="bg-black/80 p-8 font-mono text-sm text-green-400 overflow-x-auto">
+<pre>
+┌───────────────────┐        ┌───────────────────┐
+│   kubectl / CLI   │ ──────▶│   API Server      │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │       etcd        │
+                             └───────────────────┘
+                                       │
+                                       ▼
+┌───────────────────┐        ┌───────────────────┐
+│   Scheduler       │ ──────▶│   Kubelet (Node)  │
+└───────────────────┘        └───────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │    Containers     │
+                             └───────────────────┘
+</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <footer className="mt-40 text-center text-gray-600 text-xs font-mono uppercase tracking-widest">
-        Design Framework: React + Framer Motion // Year: 2026
-      </footer>
+    <section>
+        <div class="flex items-center gap-3 mb-8">
+            <span class="text-2xl">⌨️</span>
+            <h2 class="text-3xl font-bold text-white">Command Explorer</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl get</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl get pods')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> List resources like pods, services, or deployments.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl get pods -n kube-system</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl describe</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl describe pod')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Detailed inspection of a specific resource state and events.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl describe node worker-1</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl apply</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl apply -f config.yaml')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Declarative management of resources via YAML/JSON files.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl apply -f deployment.yaml</code></p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 accordion-item" onclick="this.classList.toggle('accordion-open')">
+                <div class="flex justify-between items-center cursor-pointer">
+                    <code class="text-blue-400 font-bold text-lg">kubectl logs</code>
+                    <button class="bg-[#326ce5] hover:bg-blue-600 px-3 py-1 rounded text-xs font-bold transition" onclick="copyCommand(event, 'kubectl logs -f')">COPY</button>
+                </div>
+                <div class="accordion-content text-sm text-gray-400">
+                    <p class="mb-2"><strong class="text-gray-200">Purpose:</strong> Print the logs for a container in a pod.</p>
+                    <p class="bg-black/30 p-2 rounded text-blue-300"><code>Example: kubectl logs -f my-pod-xyz</code></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  </main>
+
+  <footer class="text-center py-12 bg-black/40 border-t border-white/10 mt-12">
+    <p class="text-gray-500 text-sm">
+      © 2026 Kubernetes Reference Guide | <span class="text-blue-500">Nautical & Industrial Design</span>
+    </p>
+    <div class="mt-4 flex justify-center gap-4 text-xs uppercase tracking-widest text-gray-600">
+        <span>Stability</span>
+        <span>•</span>
+        <span>Scalability</span>
+        <span>•</span>
+        <span>Availability</span>
     </div>
-  );
-}
+  </footer>
+
+  <script>
+    // Copy to clipboard
+    function copyCommand(event, command) {
+      event.stopPropagation();
+      navigator.clipboard.writeText(command);
+      // Optional: replace alert with a toast for better UX
+      alert("Command Copied: " + command);
+    }
+
+    // Chart.js Setup
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+            x: { grid: { display: false }, ticks: { color: '#888' } }
+        }
+    };
+
+    // CPU Chart
+    new Chart(document.getElementById('cpuChart'), {
+      type: 'line',
+      data: {
+        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+        datasets: [{
+          label: 'CPU Usage',
+          data: [25, 45, 38, 62, 55, 70],
+          borderColor: '#326ce5',
+          backgroundColor: 'rgba(50,108,229,0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: chartOptions
+    });
+
+    // Memory Chart
+    new Chart(document.getElementById('memoryChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Node 1', 'Node 2', 'Node 3', 'Node 4', 'Node 5'],
+        datasets: [{
+          data: [2.1, 3.8, 1.5, 2.9, 3.2],
+          backgroundColor: '#326ce5',
+          borderRadius: 4
+        }]
+      },
+      options: chartOptions
+    });
+  </script>
+</body>
+</html>
